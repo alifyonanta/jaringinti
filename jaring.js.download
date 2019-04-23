@@ -1,0 +1,98 @@
+var vpid;
+
+function set_feedback(text, classname, keep_displayed)
+{
+	if(text!='')
+	{
+		$('#feedback_bar').removeClass();
+		$('#feedback_bar').addClass(classname);
+		$('#feedback_bar').text(text);
+		$('#feedback_bar').css('opacity','1');
+
+		if(!keep_displayed)
+		{
+			$('#feedback_bar').fadeTo(5000, 1);
+			$('#feedback_bar').fadeTo("fast",0);
+		}
+	}
+	else
+	{
+		$('#feedback_bar').css('opacity','0');
+	}
+}
+
+function refresh_comment(url, on_complete)
+{	
+	$('#comments_area').load(url,function()
+	{
+		if(typeof on_complete=='function')
+			on_complete();		
+	});
+}
+
+function reply_comment(url,pid)
+{
+	if(vpid!='')
+		$('#reply_comm'+vpid).empty();
+		
+	$('#reply_comm'+pid).load(url+'/'+pid,function()
+	{
+		if(typeof on_complete=='function')
+			on_complete();
+			
+	});
+	vpid = pid;
+
+	return false;
+}
+
+function onShow_comment(tid)
+{
+	$.ajax({
+		type: 'POST',
+		url: '/jaring/comments/onshow/'+tid,
+		success: function( response ) {
+			if(response.success)
+				window.location.reload(true);
+		},
+		dataType:'json'
+	});
+	
+	return false;
+}
+
+
+function onHide_comment(tid)
+{
+	$.ajax({
+		type: 'POST',
+		url:  '/jaring/comments/onhide/'+tid,
+		success: function( response ) {
+			if(response.success)
+				window.location.reload(true);
+		},
+		dataType:'json'
+	});
+	
+	return false;
+}
+
+
+function refresh_table()
+{
+    $('#spinner').show();
+	$('#datatables').load($('#search_form').attr('action'),{'search':$('#search').val()},function()
+	{
+		if(typeof on_complete=='function')
+			on_complete();
+				
+		$('#spinner').hide();
+	});
+}
+
+
+function stopRKey(evt) { 
+	var evt = (evt) ? evt : ((event) ? event : null); 
+	var node = (evt.target) ? evt.target : ((evt.srcElement) ? evt.srcElement : null); 
+	if ((evt.keyCode == 13) && (node.type=="text"))  {return false;} 
+} 

@@ -1,0 +1,76 @@
+/* 
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+var intiWinlogin = null;
+
+(function ($) {
+    $.fn.intiSignin = function (key) {
+        this.click(function (e) {
+            e.preventDefault();
+            var objForm = document.createElement("form");
+            $(objForm).prop("method", "post").prop("action", "https://api.inti.co.id/sso/");
+            //$(objForm).prop("method", "post").prop("action", "http://localhost/ssinti/");
+            $("body").append(objForm);
+
+            var objInputHost = document.createElement("input");
+            $(objForm).append(objInputHost);
+            $(objInputHost).prop("type", "hidden").prop("name", "key").prop("value", key);
+
+            $(objForm).submit();
+
+        });
+    };
+
+    $.fn.intiSigninPopup = function (key) {
+        this.click(function (e) {
+            e.preventDefault();
+            if (intiWinlogin !== null) {
+                intiWinlogin.close();
+            }
+            intiWinlogin = window.open("https://api.inti.co.id/sso/main/index/popup", "_blank", "height=1000,width=1000,location=no,menubar=no,status=no,toolbar=no");
+            //intiWinlogin = window.open("http://localhost/ssinti/main/index/popup", "_blank", "height=1000,width=1000,location=no,menubar=no,status=no,toolbar=no");
+            $(intiWinlogin).unload(function() {
+                if ($.trim(intiWinlogin.location) != "about:blank") {
+                    //$.ssIntiRedirect(key);
+                }
+            });
+            
+        });
+    };
+
+    $.fn.intiSignout = function (key) {
+        this.click(function (e) {
+            e.preventDefault();
+            var objForm = document.createElement("form");
+            $(objForm).prop("method", "post").prop("action", "https://api.inti.co.id/sso");
+            //$(objForm).prop("method", "post").prop("action", "http://localhost/ssinti/signout");
+            $("body").append(objForm);
+
+            var objInputHost = document.createElement("input");
+            $(objForm).append(objInputHost);
+            $(objInputHost).prop("type", "hidden").prop("name", "key").prop("value", key);
+
+            $(objForm).submit();
+
+        });
+    };
+
+    $.ssIntiRedirect = function (key) {
+        var objForm = document.createElement("form");
+        $(objForm).prop("method", "post").prop("action", "https://api.inti.co.id/sso/");
+        //$(objForm).prop("method", "post").prop("action", "http://localhost/ssinti/");
+        $("body").append(objForm);
+
+        var objInputHost = document.createElement("input");
+        $(objForm).append(objInputHost);
+        $(objInputHost).prop("type", "hidden").prop("name", "key").prop("value", key);
+
+        $(objForm).submit();
+    };
+
+}(jQuery));
+
+
+
